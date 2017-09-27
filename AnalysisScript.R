@@ -94,3 +94,31 @@ impstepmedian<-median(d7$steps)
 impstepmean
 
 impstepmedian
+
+# Convert date column to actual dates
+
+d6$date<-as.Date(d6$date)
+
+# add column for day of week
+
+d6$weekday<-weekdays(d6$date)
+
+# combine weekdays into weekend or weekday
+
+d6<-mutate(d6, DayType = ifelse(test = weekday=="Saturday" | weekday=="Sunday", yes="Weekend", no="Weekday"))
+
+# convert Daytype to factor
+
+d6$DayType<-as.factor(d6$DayType)
+
+d8<-d6 %>%
+  group_by(DayType, interval) %>%
+  summarize(steps=mean(steps))
+
+# plot avg steps by interval
+
+plot4<-ggplot(d8, aes(x=interval, y=steps))+geom_line(col="blue")+
+  labs(x="Interval", y="Average Steps Taken", title="Average Steps Taken by Interval: Weekday vs. Weekend")+
+  facet_grid(DayType~.)
+
+plot4
