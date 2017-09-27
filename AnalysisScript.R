@@ -44,15 +44,14 @@ stepmedian
 
 d4<-d2
 
-d4$interval<-as.factor(d4$interval)
-
 d5<-d4 %>%
   group_by(interval) %>%
   summarize(steps=mean(steps))
 
 # plot avg steps by interval
 
-plot2<-ggplot(d5, aes(x=interval, y=steps, group=1))+geom_line()
+plot2<-ggplot(d5, aes(x=interval, y=steps))+geom_line(col="blue")+
+  labs(x="Interval", y="Average Steps Taken", title="Average Steps Taken by Interval")
 
 plot2
 
@@ -61,6 +60,8 @@ plot2
 max<-max(d5$steps)
 
 maxint<-subset(d5, steps==max)
+
+maxint$interval
 
 
 # Calculate number of rows with NA's
