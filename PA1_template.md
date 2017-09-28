@@ -1,5 +1,5 @@
 # Reproducible Research: Peer Assessment 1
-## OVerview
+## Overview
 
 This analysis will evaluate data collected from a personal monitoring device.  The data tracks an anonymous subject's steps taken by day in five minute increments.  There are two months worth of data collected from October to November 2012.
 
