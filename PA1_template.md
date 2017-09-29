@@ -215,12 +215,18 @@ d8<-d6 %>%
   summarize(steps=mean(steps))
 ```
 
-# plot avg steps by interval
+Now we'll produce a panel plot to compare step activity on weedays vs. weekends
 
+
+```r
 plot4<-ggplot(d8, aes(x=interval, y=steps))+geom_line(col="blue")+
   labs(x="Interval", y="Average Steps Taken", title="Average Steps Taken by Interval: Weekday vs. Weekend")+
   facet_grid(DayType~.)
 
 plot4
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+
+We can see from the plot that step activity was more constant throughout the day on weekends vs. weekdays.
+

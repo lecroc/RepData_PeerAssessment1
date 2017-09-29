@@ -192,7 +192,9 @@ d8<-d6 %>%
 
 ```
 
-# plot avg steps by interval
+Now we'll produce a panel plot to compare step activity on weedays vs. weekends
+
+```{r, echo=T}
 
 plot4<-ggplot(d8, aes(x=interval, y=steps))+geom_line(col="blue")+
   labs(x="Interval", y="Average Steps Taken", title="Average Steps Taken by Interval: Weekday vs. Weekend")+
@@ -201,3 +203,6 @@ plot4<-ggplot(d8, aes(x=interval, y=steps))+geom_line(col="blue")+
 plot4
 
 ```
+
+We can see from the plot that step activity was more constant throughout the day on weekends vs. weekdays.
+
