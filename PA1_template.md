@@ -83,7 +83,7 @@ plot1
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 
-This final block will calculate and displsy the mean and median steps by day
+Now, I will calculate and displsy the mean and median steps by day
 
 
 
@@ -102,7 +102,7 @@ The median of steps taken is 10765
 
 ## What is the average daily activity pattern?
 
-The first block of code will create another new data frame (d3) that summarizes steps taken by interval.
+This block of code will create another new data frame (d3) that summarizes steps taken by interval.
 
 
 ```r
@@ -113,7 +113,7 @@ d4<-d2 %>%
   summarize(steps=mean(steps))
 ```
 
-This next block will plot the average steps by interval.
+Next, I will plot the average steps by interval.
 
 
 ```r
@@ -183,12 +183,14 @@ impstepmean<-mean(d7$steps)
 impstepmedian<-median(d7$steps)
 ```
 
-The impact of imputing the missing data on the mean is -220
+Imputing the missing data Changes the average daily steps by -220
 
-The impact of imputing the missing data on the median is -194
+Imputing the missing data changes the median by -194
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+First, I'll create a new factor variable called DayType that will indicate whether a given date is a weekend day or a weekday.  Then we will summarize the data by Interval and DayType.
 
 
 ```r
@@ -211,6 +213,7 @@ d6$DayType<-as.factor(d6$DayType)
 d8<-d6 %>%
   group_by(DayType, interval) %>%
   summarize(steps=mean(steps))
+```
 
 # plot avg steps by interval
 
@@ -219,6 +222,5 @@ plot4<-ggplot(d8, aes(x=interval, y=steps))+geom_line(col="blue")+
   facet_grid(DayType~.)
 
 plot4
-```
 
-![](PA1_template_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+```

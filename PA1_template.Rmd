@@ -2,7 +2,8 @@
 title: "Reproducible Research: Peer Assessment 1"
 output: 
   html_document:
-    keep_md: true
+    fig_caption: yes
+    keep_md: yes
 ---
 ## Overview
 
@@ -165,6 +166,8 @@ Imputing the missing data changes the median by `r impstepmedian-stepmedian`
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
+First, I'll create a new factor variable called DayType that will indicate whether a given date is a weekend day or a weekday.  Then we will summarize the data by Interval and DayType.
+
 ```{r, echo=T}
 
 # Convert date column to actual dates
@@ -186,6 +189,8 @@ d6$DayType<-as.factor(d6$DayType)
 d8<-d6 %>%
   group_by(DayType, interval) %>%
   summarize(steps=mean(steps))
+
+```
 
 # plot avg steps by interval
 
