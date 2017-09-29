@@ -35,6 +35,7 @@ d2<-d1[good,]
 
 ## What is mean total number of steps taken per day?
 
+This first block of code will create a data frame (d3) that summarized the steps taken by date.
 
 ```{r, echo=T}
 
@@ -43,97 +44,123 @@ d2<-d1[good,]
 d3<-d2 %>%
   group_by(date) %>%
   summarize(steps=sum(steps))
+```
 
-# Histogram of steps by day
+This second block of code will plot a histogram of steps by day using the summarized data frame (d3).
+
+```{r, echo=T}
 
 plot1<-ggplot(data=d3, aes(d3$steps)) + geom_histogram(binwidth = 2500, col="black", fill="blue")
 plot1<-plot1+labs(x="Steps", y="Count of Days", title="Histogram of Steps per Day")
 
 plot1
 
-# mean and median steps by day
+```
 
-stepmean<-mean(d3$steps)
+Now, I will calculate and displsy the mean and median steps by day
+
+
+```{r, echo=T}
+
+options(scipen = 999)
+
+stepmean<-round(mean(d3$steps),0)
 
 stepmedian<-median(d3$steps)
 
-stepmean
-
-stepmedian
-
 ```
 
+The mean of steps taken is `r stepmean`
+
+The median of steps taken is `r stepmedian`
 
 
 ## What is the average daily activity pattern?
 
+This block of code will create another new data frame (d3) that summarizes steps taken by interval.
 
 ```{r, echo=T}
 
 # summarize by avg steps taken by interval
 
-d4<-d2
-
-d5<-d4 %>%
+d4<-d2 %>%
   group_by(interval) %>%
   summarize(steps=mean(steps))
+```
 
-# plot avg steps by interval
+Next, I will plot the average steps by interval.
 
-plot2<-ggplot(d5, aes(x=interval, y=steps))+geom_line(col="blue")+
+```{r, echo=T}
+
+plot2<-ggplot(d4, aes(x=interval, y=steps))+geom_line(col="blue")+
   labs(x="Interval", y="Average Steps Taken", title="Average Steps Taken by Interval")
 
 plot2
 
-# find interval with most steps taken
+```
 
-max<-max(d5$steps)
+Now, we will find the interval with most steps taken
 
-maxint<-subset(d5, steps==max)
+```{r, echo=T}
 
-maxint$interval
+max<-max(d4$steps)
+
+maxint<-subset(d4, steps==max)
 
 ```
 
-
+The interval with the most steps taken is interval #`r maxint$interval`, which is equivalent to 8:35am.
 
 ## Imputing missing values
 
+First we will calculate how many records in the original data frame (d1) have missing values.
+ 
 ```{r, echo=T}
 
 # Calculate number of rows with NA's
 
 NAnumb<-nrow(d1)-nrow(d2)
 
-NAnumb
+```
 
-# Impute NAs with knn
+There are `r NAnumb` records with missing values
+
+Next, I'll use the knnImputation() function from the DMwR package to impute the missing values.  I'll then summarize the imputed data by date.
+
+```{r, echo=T}
 
 d6<-knnImputation(d1, k=5)
 
 d7<-d6 %>%
   group_by(date) %>%
   summarize(steps=sum(steps))
+```
 
-# Histogram of steps by day
+Now, I'll plot a histogram of steps by day using the imputed data
+
+```{r, echo=T}
 
 plot3<-ggplot(data=d7, aes(d7$steps)) + geom_histogram(binwidth = 2500, col="black", fill="blue")
 plot3<-plot1+labs(x="Steps", y="Count of Days", title="Histogram of Steps per Day - Imputed N/A")
 
 plot3
+```
 
-# mean and median steps by day
+We can see that this histogram is very similar to the one generated with the N/A values excluded.
+
+Now we'll see how much the imputing changed the mean and median number of steps taken by day
+
+```{r, echo=T}
 
 impstepmean<-mean(d7$steps)
 
 impstepmedian<-median(d7$steps)
 
-impstepmean
-
-impstepmedian
-
 ```
 
+Imputing the missing data Changes the average daily steps by `r round(impstepmean-stepmean, 0)`
+
+Imputing the missing data changes the median by `r impstepmedian-stepmedian`
 
 
 ## Are there differences in activity patterns between weekdays and weekends?

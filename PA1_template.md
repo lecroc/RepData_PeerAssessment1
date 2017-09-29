@@ -60,6 +60,7 @@ d2<-d1[good,]
 
 ## What is mean total number of steps taken per day?
 
+This first block of code will create a data frame (d3) that summarized the steps taken by date.
 
 
 ```r
@@ -68,136 +69,123 @@ d2<-d1[good,]
 d3<-d2 %>%
   group_by(date) %>%
   summarize(steps=sum(steps))
+```
 
-# Histogram of steps by day
+This second block of code will plot a histogram of steps by day using the summarized data frame (d3).
 
+
+```r
 plot1<-ggplot(data=d3, aes(d3$steps)) + geom_histogram(binwidth = 2500, col="black", fill="blue")
 plot1<-plot1+labs(x="Steps", y="Count of Days", title="Histogram of Steps per Day")
 
 plot1
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
+This final block will calculate and displsy the mean and median steps by day
+
+
 
 ```r
-# mean and median steps by day
+options(scipen = 999)
 
-stepmean<-mean(d3$steps)
+stepmean<-round(mean(d3$steps),0)
 
 stepmedian<-median(d3$steps)
-
-stepmean
 ```
 
-```
-## [1] 10766.19
-```
+The mean of steps taken is 10766
 
-```r
-stepmedian
-```
-
-```
-## [1] 10765
-```
-
+The median of steps taken is 10765
 
 
 ## What is the average daily activity pattern?
 
+The first block of code will create another new data frame (d3) that summarizes steps taken by interval.
 
 
 ```r
 # summarize by avg steps taken by interval
 
-d4<-d2
-
-d5<-d4 %>%
+d4<-d2 %>%
   group_by(interval) %>%
   summarize(steps=mean(steps))
+```
 
-# plot avg steps by interval
+This next block will plot the average steps by interval.
 
-plot2<-ggplot(d5, aes(x=interval, y=steps))+geom_line(col="blue")+
+
+```r
+plot2<-ggplot(d4, aes(x=interval, y=steps))+geom_line(col="blue")+
   labs(x="Interval", y="Average Steps Taken", title="Average Steps Taken by Interval")
 
 plot2
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+
+Now, we will find the interval with most steps taken
+
 
 ```r
-# find interval with most steps taken
+max<-max(d4$steps)
 
-max<-max(d5$steps)
-
-maxint<-subset(d5, steps==max)
-
-maxint$interval
+maxint<-subset(d4, steps==max)
 ```
 
-```
-## [1] 835
-```
-
-
+The interval with the most steps taken is interval #835, which is equivalent to 8:35am.
 
 ## Imputing missing values
 
+First we will calculate how many records in the original data frame (d1) have missing values.
+ 
 
 ```r
 # Calculate number of rows with NA's
 
 NAnumb<-nrow(d1)-nrow(d2)
-
-NAnumb
 ```
 
-```
-## [1] 2304
-```
+There are 2304 records with missing values
+
+Next, I'll use the knnImputation() function from the DMwR package to impute the missing values.  I'll then summarize the imputed data by date.
+
 
 ```r
-# Impute NAs with knn
-
 d6<-knnImputation(d1, k=5)
 
 d7<-d6 %>%
   group_by(date) %>%
   summarize(steps=sum(steps))
+```
 
-# Histogram of steps by day
+Now, I'll plot a histogram of steps by day using the imputed data
 
+
+```r
 plot3<-ggplot(data=d7, aes(d7$steps)) + geom_histogram(binwidth = 2500, col="black", fill="blue")
 plot3<-plot1+labs(x="Steps", y="Count of Days", title="Histogram of Steps per Day - Imputed N/A")
 
 plot3
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+
+We can see that this histogram is very similar to the one generated with the N/A values excluded.
+
+Now we'll see how much the imputing changed the mean and median number of steps taken by day
+
 
 ```r
-# mean and median steps by day
-
 impstepmean<-mean(d7$steps)
 
 impstepmedian<-median(d7$steps)
-
-impstepmean
 ```
 
-```
-## [1] 10545.98
-```
+The impact of imputing the missing data on the mean is -220
 
-```r
-impstepmedian
-```
-
-```
-## [1] 10571
-```
-
+The impact of imputing the missing data on the median is -194
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -233,4 +221,4 @@ plot4<-ggplot(d8, aes(x=interval, y=steps))+geom_line(col="blue")+
 plot4
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
