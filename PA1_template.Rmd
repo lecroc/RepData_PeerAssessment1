@@ -3,7 +3,9 @@ title: "Reproducible Research: Peer Assessment 1"
 output: 
   html_document:
     fig_caption: yes
+    highlight: pygments
     keep_md: yes
+    theme: readable
 ---
 ## Overview
 
@@ -15,21 +17,13 @@ The following code will load the libraries I will use and then load the data int
 
 ```{r, echo=T}
 
-# load libraries
-
 library(dplyr)
 library(ggplot2)
 library(DMwR)
 
-# Get Data
-
 d1<-read.csv(unz("activity.zip", "activity.csv"))
 
-# create a vector of complete cases
-
 good<-complete.cases(d1)
-
-# keep only complete cases
 
 d2<-d1[good,]
 ```
@@ -40,11 +34,10 @@ This first block of code will create a data frame (d3) that summarized the steps
 
 ```{r, echo=T}
 
-# summarize to steps taken by day
-
 d3<-d2 %>%
   group_by(date) %>%
   summarize(steps=sum(steps))
+
 ```
 
 This second block of code will plot a histogram of steps by day using the summarized data frame (d3).
@@ -78,15 +71,14 @@ The median of steps taken is `r stepmedian`
 
 ## What is the average daily activity pattern?
 
-This block of code will create another new data frame (d3) that summarizes steps taken by interval.
+This block of code will create another new data frame (d4) that summarizes steps taken by interval.
 
 ```{r, echo=T}
-
-# summarize by avg steps taken by interval
 
 d4<-d2 %>%
   group_by(interval) %>%
   summarize(steps=mean(steps))
+
 ```
 
 Next, I will plot the average steps by interval.
@@ -118,8 +110,6 @@ First we will calculate how many records in the original data frame (d1) have mi
  
 ```{r, echo=T}
 
-# Calculate number of rows with NA's
-
 NAnumb<-nrow(d1)-nrow(d2)
 
 ```
@@ -135,6 +125,7 @@ d6<-knnImputation(d1, k=5)
 d7<-d6 %>%
   group_by(date) %>%
   summarize(steps=sum(steps))
+
 ```
 
 Now, I'll plot a histogram of steps by day using the imputed data
@@ -145,21 +136,26 @@ plot3<-ggplot(data=d7, aes(d7$steps)) + geom_histogram(binwidth = 2500, col="bla
 plot3<-plot1+labs(x="Steps", y="Count of Days", title="Histogram of Steps per Day - Imputed N/A")
 
 plot3
+
 ```
 
-We can see that this histogram is very similar to the one generated with the N/A values excluded.
+We can see that this histogram looks the same as the one generated with the N/A values excluded.
 
 Now we'll see how much the imputing changed the mean and median number of steps taken by day
 
 ```{r, echo=T}
 
-impstepmean<-mean(d7$steps)
+impstepmean<-round(mean(d7$steps),0)
 
 impstepmedian<-median(d7$steps)
 
 ```
 
-Imputing the missing data Changes the average daily steps by `r round(impstepmean-stepmean, 0)`
+Imputed mean = `r impstepmean`
+
+Imputing the missing data changes the average daily steps by `r round(impstepmean-stepmean, 0)`
+
+Imputed median = `r impstepmedian`
 
 Imputing the missing data changes the median by `r impstepmedian-stepmedian`
 
@@ -170,19 +166,11 @@ First, I'll create a new factor variable called DayType that will indicate wheth
 
 ```{r, echo=T}
 
-# Convert date column to actual dates
-
 d6$date<-as.Date(d6$date)
-
-# add column for day of week
 
 d6$weekday<-weekdays(d6$date)
 
-# combine weekdays into weekend or weekday
-
 d6<-mutate(d6, DayType = ifelse(test = weekday=="Saturday" | weekday=="Sunday", yes="Weekend", no="Weekday"))
-
-# convert Daytype to factor
 
 d6$DayType<-as.factor(d6$DayType)
 

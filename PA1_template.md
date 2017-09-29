@@ -9,8 +9,6 @@ The following code will load the libraries I will use and then load the data int
 
 
 ```r
-# load libraries
-
 library(dplyr)
 ```
 
@@ -45,15 +43,9 @@ library(DMwR)
 ```
 
 ```r
-# Get Data
-
 d1<-read.csv(unz("activity.zip", "activity.csv"))
 
-# create a vector of complete cases
-
 good<-complete.cases(d1)
-
-# keep only complete cases
 
 d2<-d1[good,]
 ```
@@ -64,8 +56,6 @@ This first block of code will create a data frame (d3) that summarized the steps
 
 
 ```r
-# summarize to steps taken by day
-
 d3<-d2 %>%
   group_by(date) %>%
   summarize(steps=sum(steps))
@@ -102,12 +92,10 @@ The median of steps taken is 10765
 
 ## What is the average daily activity pattern?
 
-This block of code will create another new data frame (d3) that summarizes steps taken by interval.
+This block of code will create another new data frame (d4) that summarizes steps taken by interval.
 
 
 ```r
-# summarize by avg steps taken by interval
-
 d4<-d2 %>%
   group_by(interval) %>%
   summarize(steps=mean(steps))
@@ -142,8 +130,6 @@ First we will calculate how many records in the original data frame (d1) have mi
  
 
 ```r
-# Calculate number of rows with NA's
-
 NAnumb<-nrow(d1)-nrow(d2)
 ```
 
@@ -172,18 +158,22 @@ plot3
 
 ![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
-We can see that this histogram is very similar to the one generated with the N/A values excluded.
+We can see that this histogram looks the same as the one generated with the N/A values excluded.
 
 Now we'll see how much the imputing changed the mean and median number of steps taken by day
 
 
 ```r
-impstepmean<-mean(d7$steps)
+impstepmean<-round(mean(d7$steps),0)
 
 impstepmedian<-median(d7$steps)
 ```
 
-Imputing the missing data Changes the average daily steps by -220
+Imputed mean = 10546
+
+Imputing the missing data changes the average daily steps by -220
+
+Imputed median = 10571
 
 Imputing the missing data changes the median by -194
 
@@ -194,19 +184,11 @@ First, I'll create a new factor variable called DayType that will indicate wheth
 
 
 ```r
-# Convert date column to actual dates
-
 d6$date<-as.Date(d6$date)
-
-# add column for day of week
 
 d6$weekday<-weekdays(d6$date)
 
-# combine weekdays into weekend or weekday
-
 d6<-mutate(d6, DayType = ifelse(test = weekday=="Saturday" | weekday=="Sunday", yes="Weekend", no="Weekday"))
-
-# convert Daytype to factor
 
 d6$DayType<-as.factor(d6$DayType)
 
